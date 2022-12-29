@@ -25,7 +25,7 @@ const addBranchIcon = () => {
 
     const branchIcon = document.createElement("img");
     branchIcon.id = "jirabranch-icon";
-    branchIcon.src = chrome.runtime.getURL("images/icon-24.png");
+    branchIcon.src = chrome.runtime.getURL("images/icon-16.png");
     branchIcon.addEventListener("click", (event) => {
       navigator.clipboard.writeText(branch);
       copiedIndicator = document.createElement("span");
