@@ -44,7 +44,7 @@ const addBranchIcon = () => {
 }
 
 const onMutation = (mutations, observer) => {
-  if (mutations.some((mut) => mut.target.id == "summary-val")) {
+  if (mutations.some((mut) => ["summary-id", "issue-content"].includes(mut.target.id))) {
     addBranchIcon();
   }
 }
