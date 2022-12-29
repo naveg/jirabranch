@@ -1,0 +1,10 @@
+#jirabranch-icon {
+  padding-left: 5px;
+  cursor: pointer;
+}
+
+#jirabranch-indicator {
+  opacity: 1;
+  -webkit-transition: opacity 500ms linear;
+  transition: opacity 500ms linear;
+}

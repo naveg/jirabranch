@@ -1,0 +1,32 @@
+{
+  "manifest_version": 3,
+  "name": "JIRABranch",
+  "version": "1.0",
+  "description": "Quickly create and copy a branch name for a JIRA ticket",
+  "icons": {
+    "16": "images/icon-16.png",
+    "32": "images/icon-32.png",
+    "48": "images/icon-48.png",
+    "128": "images/icon-128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["images/*"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_scripts": [
+    {
+      "js": ["jirabranch.js"],
+      "css": ["jirabranch.css"],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "permissions": ["storage"],
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
+  }
+}
