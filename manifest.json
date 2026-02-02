@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "JIRABranch",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Quickly create and copy a branch name for a JIRA ticket",
   "icons": {
     "16": "images/icon-16.png",
