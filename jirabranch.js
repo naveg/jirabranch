@@ -14,12 +14,46 @@ const slugify = (text) => {
 
 PREFIX = "";
 
-const addBranchIcon = () => {
-  const keylink = document.querySelector("#key-val") || document.querySelector("#issuekey-val");
+// Get the issue key element and text for both Datacenter and Cloud
+const getIssueKeyInfo = () => {
+  // Datacenter selectors
+  let keyElement = document.querySelector("#key-val") || document.querySelector("#issuekey-val");
+  if (keyElement) {
+    return { element: keyElement, key: keyElement.textContent.trim() };
+  }
 
-  if (keylink) {
-    const key = keylink.textContent;
-    const summary = document.querySelector("#summary-val").textContent;
+  // Cloud selector
+  keyElement = document.querySelector('[data-testid="issue.views.issue-base.foundation.breadcrumbs.current-issue.item"]');
+  if (keyElement) {
+    return { element: keyElement, key: keyElement.textContent.trim() };
+  }
+
+  return null;
+}
+
+// Get the issue summary for both Datacenter and Cloud
+const getIssueSummary = () => {
+  // Datacenter selector
+  let summaryElement = document.querySelector("#summary-val");
+  if (summaryElement) {
+    return summaryElement.textContent.trim();
+  }
+
+  // Cloud selector
+  summaryElement = document.querySelector('[data-testid="issue-field-summary.ui.issue-field-summary-inline-edit--container"]');
+  if (summaryElement) {
+    return summaryElement.textContent.trim();
+  }
+
+  return null;
+}
+
+const addBranchIcon = () => {
+  const keyInfo = getIssueKeyInfo();
+  const summary = getIssueSummary();
+
+  if (keyInfo && summary) {
+    const { element: keyElement, key } = keyInfo;
     const slug = slugify(summary);
     const branch = `${PREFIX}${key}-${slug}`;
 
@@ -39,12 +73,25 @@ const addBranchIcon = () => {
     });
 
     document.querySelector("#jirabranch-icon")?.remove();
-    keylink.insertAdjacentElement("afterend", branchIcon);
+    keyElement.insertAdjacentElement("afterend", branchIcon);
   }
 }
 
 const onMutation = (mutations, observer) => {
-  if (mutations.some((mut) => ["summary-id", "issue-content"].includes(mut.target.id))) {
+  // Datacenter triggers
+  const datacenterTrigger = mutations.some((mut) =>
+    ["summary-id", "issue-content"].includes(mut.target.id)
+  );
+
+  // Cloud triggers - check for relevant testid attributes or class changes
+  const cloudTrigger = mutations.some((mut) => {
+    const testId = mut.target.dataset?.testid || "";
+    return testId.includes("issue.views") ||
+           testId.includes("breadcrumbs") ||
+           testId.includes("issue-field-summary");
+  });
+
+  if (datacenterTrigger || cloudTrigger) {
     addBranchIcon();
   }
 }
@@ -61,5 +108,11 @@ if (jira) {
       childList: true,
       subtree: true
     });
+
+    // For Cloud: retry after a short delay since content loads dynamically
+    if (!document.querySelector("#jirabranch-icon")) {
+      setTimeout(addBranchIcon, 1000);
+      setTimeout(addBranchIcon, 2500);
+    }
   });
 }
